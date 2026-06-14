@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Glow Skincare Store</title>
+
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    *{
+      margin:0;
+      padding:0;
+      box-sizing:border-box;
+      font-family:'Poppins',sans-serif;
+    }
+
+    body{
+      background:#f4f4f4;
+      color:#111;
+    }
+
+    /* HEADER */
+    header{
+      background:white;
+      border-bottom:1px solid #e6e6e6;
+      padding:15px 25px;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+    }
+
+    .left{
+      font-size:20px;
+      font-weight:700;
+    }
+
+    .center input{
+      padding:10px 14px;
+      width:320px;
+      border-radius:10px;
+      border:1px solid #ddd;
+      outline:none;
+    }
+
+    .center input:focus{
+      border-color:#111;
+    }
+
+    .right{
+      display:flex;
+      gap:10px;
+    }
+
+    .right button{
+      background:#111;
+      color:white;
+      border:none;
+      padding:10px 14px;
+      border-radius:10px;
+      cursor:pointer;
+      font-weight:600;
+    }
+
+    .right button:hover{
+      background:#000;
+    }
+
+    /* PRODUCTS GRID */
+    .products{
+      display:grid;
+      grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+      gap:20px;
+      padding:30px;
+      max-width:1200px;
+      margin:auto;
+    }
+
+    /* CARD */
+    .card{
+      background:white;
+      border:1px solid #e6e6e6;
+      border-radius:14px;
+      padding:18px;
+      text-align:center;
+      transition:0.2s;
+    }
+
+    .card:hover{
+      transform:translateY(-4px);
+      box-shadow:0 10px 25px rgba(0,0,0,0.08);
+    }
+
+    .card img{
+      width:130px;
+      height:130px;
+      border-radius:12px;
+      object-fit:cover;
+      margin-bottom:10px;
+    }
+
+    .card h4{
+      margin:8px 0 5px;
+      font-weight:600;
+    }
+
+    .card p{
+      color:#555;
+      margin-bottom:12px;
+    }
+
+    button.add{
+      background:#111;
+      color:white;
+      border:none;
+      padding:10px;
+      border-radius:10px;
+      cursor:pointer;
+      font-weight:600;
+      width:100%;
+    }
+
+    button.add:hover{
+      background:#000;
+    }
+
+  </style>
+</head>
+
+<body>
+
+<header>
+  <div class="left">🌿 Glow Skincare Store</div>
+
+  <div class="center">
+    <input type="text" id="search" placeholder="Search skincare..." onkeyup="searchProduct()">
+  </div>
+
+  <div class="right">
+    <button onclick="goCart()">Cart</button>
+    <button onclick="goOrders()">Orders</button>
+  </div>
+</header>
+
+<div class="products" id="products"></div>
+
+<script>
+
+let products = [
+  {
+    name: "Face Wash 🧼",
+    price: 250,
+    image: "https://images.unsplash.com/photo-1556228578-8c89e6adf883?auto=format&fit=crop&w=500"
+  },
+  {
+    name: "Moisturizer 🧴",
+    price: 400,
+    image: "https://images.unsplash.com/photo-1611930022073-84f6a4f9a9f6?auto=format&fit=crop&w=500"
+  },
+  {
+    name: "Sunscreen ☀️",
+    price: 350,
+    image: "https://images.unsplash.com/photo-1612810436541-336d8c7c2b0c?auto=format&fit=crop&w=500"
+  },
+  {
+    name: "Serum 💧",
+    price: 600,
+    image: "https://images.unsplash.com/photo-1612810806695-30d9d1b6a1f7?auto=format&fit=crop&w=500"
+  },
+  {
+    name: "Face Cream 🌸",
+    price: 500,
+    image: "https://images.unsplash.com/photo-1596462502278-27bfdc403348?auto=format&fit=crop&w=500"
+  },
+  {
+    name: "Lip Balm 💄",
+    price: 150,
+    image: "https://images.unsplash.com/photo-1585232351009-aa87416fca90?auto=format&fit=crop&w=500"
+  }
+];
+
+
+// DISPLAY
+function displayProducts(data){
+  const div = document.getElementById("products");
+  div.innerHTML = "";
+
+  data.forEach(p=>{
+    div.innerHTML += `
+      <div class="card">
+        <img src="${p.image}">
+        <h4>${p.name}</h4>
+        <p>₹${p.price}</p>
+        <button class="add" onclick="addToCart('${p.name}',${p.price})">
+          Add to Cart
+        </button>
+      </div>
+    `;
+  });
+}
+
+// SEARCH
+function searchProduct(){
+  let value = document.getElementById("search").value.toLowerCase();
+
+  let filtered = products.filter(p =>
+    p.name.toLowerCase().includes(value)
+  );
+
+  displayProducts(filtered);
+}
+
+// CART
+function addToCart(name, price){
+  let cart = JSON.parse(localStorage.getItem("cart")) || [];
+  cart.push({name, price});
+  localStorage.setItem("cart", JSON.stringify(cart));
+  alert("Added to cart 🛒");
+}
+
+// NAVIGATION
+function goCart(){
+  window.location.href="/cart.html";
+}
+
+function goOrders(){
+  window.location.href="/orders.html";
+}
+
+// INIT
+displayProducts(products);
+
+</script>
+
+</body>
+</html>

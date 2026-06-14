@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Scan & Pay</title>
+
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+  <style>
+    *{
+      margin:0;
+      padding:0;
+      box-sizing:border-box;
+      font-family:'Poppins',sans-serif;
+    }
+
+    body{
+      background:#f4f4f4;
+      min-height:100vh;
+      display:flex;
+      justify-content:center;
+      align-items:center;
+      text-align:center;
+      padding:20px;
+    }
+
+    .container{
+      background:white;
+      border:1px solid #e6e6e6;
+      padding:35px;
+      border-radius:14px;
+      width:380px;
+      box-shadow:0 10px 25px rgba(0,0,0,0.06);
+    }
+
+    h2{
+      font-size:24px;
+      margin-bottom:20px;
+      color:#111;
+      font-weight:600;
+    }
+
+    .qr-box{
+      background:white;
+      border:1px solid #eee;
+      display:inline-block;
+      padding:12px;
+      border-radius:12px;
+      margin-bottom:18px;
+    }
+
+    .qr-box img{
+      width:200px;
+      height:200px;
+    }
+
+    .amount{
+      font-size:18px;
+      font-weight:600;
+      color:#111;
+      margin-bottom:8px;
+    }
+
+    .text{
+      font-size:13px;
+      color:#666;
+      margin-bottom:15px;
+    }
+
+    .badge{
+      display:inline-block;
+      padding:6px 12px;
+      background:#f2f2f2;
+      border-radius:20px;
+      font-size:12px;
+      color:#333;
+      border:1px solid #ddd;
+    }
+
+    .loader{
+      margin-top:15px;
+      font-size:13px;
+      color:#777;
+      animation:pulse 1.5s infinite;
+    }
+
+    @keyframes pulse{
+      0%{opacity:1;}
+      50%{opacity:0.4;}
+      100%{opacity:1;}
+    }
+  </style>
+</head>
+
+<body>
+
+<div class="container">
+
+  <h2>Scan & Pay</h2>
+
+  <div id="payment"></div>
+
+  <div class="loader">Waiting for payment...</div>
+
+</div>
+
+<script>
+
+let cart = JSON.parse(localStorage.getItem("cart")) || [];
+let total = 0;
+
+cart.forEach(item => total += item.price);
+
+let upiId = "yourupi@okaxis";
+
+let upiLink = `upi://pay?pa=${upiId}&pn=Shop&am=${total}&cu=INR`;
+
+let qr = `https://api.qrserver.com/v1/create-qr-code/?size=220x220&data=${encodeURIComponent(upiLink)}`;
+
+document.getElementById("payment").innerHTML = `
+  <div class="qr-box">
+    <img src="${qr}">
+  </div>
+
+  <div class="amount">Total: ₹${total}</div>
+
+  <div class="text">Scan using GPay / PhonePe / Paytm</div>
+
+  <div class="badge">Secure UPI Payment</div>
+`;
+
+// AUTO REDIRECT
+setTimeout(() => {
+  localStorage.removeItem("cart");
+  window.location.href = "/success.html";
+}, 10000);
+
+</script>
+
+</body>
+</html>

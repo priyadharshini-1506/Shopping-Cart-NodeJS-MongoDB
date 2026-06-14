@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Orders</title>
+
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    *{
+      margin:0;
+      padding:0;
+      box-sizing:border-box;
+      font-family:'Poppins',sans-serif;
+    }
+
+    body{
+      background:#f4f4f4;
+      padding:40px 20px;
+      min-height:100vh;
+    }
+
+    h2{
+      text-align:center;
+      margin-bottom:40px;
+      font-size:34px;
+      font-weight:700;
+      color:#111;
+    }
+
+    #orders{
+      max-width:900px;
+      margin:auto;
+    }
+
+    /* ORDER CARD */
+    .order{
+      background:white;
+      border:1px solid #e6e6e6;
+      border-radius:14px;
+      padding:22px;
+      margin-bottom:20px;
+      transition:0.3s;
+      box-shadow:0 5px 15px rgba(0,0,0,0.05);
+    }
+
+    .order:hover{
+      transform:translateY(-3px);
+      box-shadow:0 10px 25px rgba(0,0,0,0.08);
+    }
+
+    .order p{
+      margin:8px 0;
+      color:#333;
+      font-size:14px;
+    }
+
+    .order b{
+      color:#111;
+    }
+
+    ul{
+      margin-top:12px;
+      margin-left:18px;
+    }
+
+    li{
+      padding:4px 0;
+      color:#555;
+      font-size:14px;
+    }
+
+    .total{
+      margin-top:15px;
+      padding-top:12px;
+      border-top:1px solid #eee;
+      font-size:16px;
+      font-weight:600;
+      color:#111;
+    }
+
+    /* EMPTY / ERROR */
+    .empty, .error{
+      text-align:center;
+      font-size:18px;
+      margin-top:40px;
+      color:#777;
+    }
+
+  </style>
+</head>
+
+<body>
+
+<h2>📦 Order History</h2>
+
+<div id="orders"></div>
+
+<script>
+fetch("/orders")
+  .then(res => res.json())
+  .then(data => {
+
+    const div = document.getElementById("orders");
+
+    if (data.length === 0) {
+      div.innerHTML = `<div class="empty">No Orders Found</div>`;
+      return;
+    }
+
+    data.forEach(order => {
+
+      let items = "";
+
+      order.items.forEach(i => {
+        items += `<li>${i.name} - ₹${i.price}</li>`;
+      });
+
+      div.innerHTML += `
+        <div class="order">
+
+          <p><b>Order ID:</b> ${order.orderId || "N/A"}</p>
+          <p><b>Customer:</b> ${order.name}</p>
+          <p><b>Phone:</b> ${order.phone}</p>
+          <p><b>Address:</b> ${order.address}</p>
+          <p><b>Payment:</b> ${order.paymentMethod}</p>
+
+          <ul>${items}</ul>
+
+          <p class="total">Total: ₹${order.total}</p>
+
+        </div>
+      `;
+    });
+
+  })
+  .catch(err => {
+    console.log(err);
+    document.getElementById("orders").innerHTML =
+      `<div class="error">Error loading orders ❌</div>`;
+  });
+</script>
+
+</body>
+</html>

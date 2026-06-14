@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Order Success</title>
+
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    *{
+      margin:0;
+      padding:0;
+      box-sizing:border-box;
+      font-family:'Poppins',sans-serif;
+    }
+
+    body{
+      background:#f7f7f7;
+      color:#111;
+      min-height:100vh;
+      display:flex;
+      justify-content:center;
+      align-items:center;
+      padding:20px;
+    }
+
+    .box{
+      width:420px;
+      background:#fff;
+      border:1px solid #ddd;
+      border-radius:10px;
+      padding:30px;
+      text-align:center;
+    }
+
+    .tick{
+      font-size:40px;
+      margin-bottom:10px;
+    }
+
+    h2{
+      font-size:22px;
+      margin-bottom:10px;
+      font-weight:600;
+    }
+
+    #orderId{
+      font-size:13px;
+      color:#666;
+      margin:10px 0;
+    }
+
+    #details{
+      text-align:left;
+      margin-top:15px;
+      font-size:14px;
+      color:#333;
+      line-height:1.6;
+    }
+
+    .item{
+      background:#f9f9f9;
+      border:1px solid #eee;
+      padding:8px;
+      border-radius:6px;
+      margin:5px 0;
+      font-size:13px;
+    }
+
+    #total{
+      margin-top:15px;
+      font-size:18px;
+      font-weight:600;
+    }
+
+    button{
+      width:100%;
+      padding:12px;
+      margin-top:10px;
+      border:none;
+      border-radius:6px;
+      font-weight:600;
+      cursor:pointer;
+    }
+
+    .download{
+      background:#111;
+      color:#fff;
+    }
+
+    .download:hover{
+      background:#000;
+    }
+
+    .view{
+      background:#fff;
+      border:1px solid #ddd;
+      color:#111;
+    }
+
+    .view:hover{
+      background:#f2f2f2;
+    }
+
+  </style>
+</head>
+
+<body>
+
+<div class="box">
+
+  <div class="tick">🎉</div>
+
+  <h2>Order Placed Successfully</h2>
+
+  <div id="orderId"></div>
+
+  <div id="details"></div>
+  <div id="items"></div>
+
+  <div id="total"></div>
+
+  <button class="download" onclick="downloadBill()">
+    Download Bill 🧾
+  </button>
+
+  <a href="/orders.html">
+    <button class="view">View Orders 📦</button>
+  </a>
+
+</div>
+
+<script>
+
+let cart = JSON.parse(localStorage.getItem("cart")) || [];
+let customer = JSON.parse(localStorage.getItem("customer")) || {};
+let method = localStorage.getItem("paymentMethod") || "COD";
+
+let orderId = "ORD" + Math.floor(Math.random() * 1000000);
+localStorage.setItem("orderId", orderId);
+
+document.getElementById("orderId").innerText = "Order ID: " + orderId;
+
+let total = 0;
+let itemsHTML = "";
+
+// ITEMS
+cart.forEach(item => {
+  total += item.price;
+  itemsHTML += `<div class="item">${item.name} - ₹${item.price}</div>`;
+});
+
+document.getElementById("details").innerHTML = `
+<b>Name:</b> ${customer.name || "-"} <br>
+<b>Phone:</b> ${customer.phone || "-"} <br>
+<b>Address:</b> ${customer.address || "-"} <br>
+<b>Pincode:</b> ${customer.pincode || "-"} <br>
+<b>Payment:</b> ${method}
+`;
+
+document.getElementById("items").innerHTML = itemsHTML;
+document.getElementById("total").innerText = "Total: ₹" + total;
+
+// SAVE TO BACKEND
+fetch("/save-order", {
+  method: "POST",
+  headers: {"Content-Type": "application/json"},
+  body: JSON.stringify({
+    orderId,
+    name: customer.name,
+    phone: customer.phone,
+    address: customer.address,
+    pincode: customer.pincode,
+    paymentMethod: method,
+    items: cart,
+    total: total
+  })
+});
+
+// CLEAR CART AFTER SAVE
+localStorage.removeItem("cart");
+
+// DOWNLOAD BILL
+function downloadBill() {
+
+  let items = "";
+
+  cart.forEach(i => {
+    items += `${i.name} - ₹${i.price}\n`;
+  });
+
+  let content = `
+ORDER ID: ${orderId}
+
+Name: ${customer.name}
+Phone: ${customer.phone}
+Address: ${customer.address}
+
+Items:
+${items}
+
+TOTAL: ₹${total}
+`;
+
+  let blob = new Blob([content], { type: "text/plain" });
+  let link = document.createElement("a");
+
+  link.href = URL.createObjectURL(blob);
+  link.download = "bill.txt";
+  link.click();
+}
+
+</script>
+
+</body>
+</html>

@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Payment Method</title>
+
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+  <style>
+    *{
+      margin:0;
+      padding:0;
+      box-sizing:border-box;
+      font-family:'Poppins',sans-serif;
+    }
+
+    body{
+      background:#f4f4f4;
+      height:100vh;
+      display:flex;
+      justify-content:center;
+      align-items:center;
+    }
+
+    .container{
+      width:420px;
+      background:white;
+      padding:40px;
+      border-radius:14px;
+      border:1px solid #e6e6e6;
+      box-shadow:0 10px 25px rgba(0,0,0,0.06);
+      text-align:center;
+    }
+
+    h2{
+      color:#111;
+      margin-bottom:25px;
+      font-size:26px;
+      font-weight:600;
+    }
+
+    .subtext{
+      color:#777;
+      font-size:13px;
+      margin-bottom:25px;
+    }
+
+    .payment-btn{
+      width:100%;
+      padding:14px;
+      margin:10px 0;
+      border:1px solid #ddd;
+      background:white;
+      color:#111;
+      border-radius:10px;
+      font-size:15px;
+      font-weight:600;
+      cursor:pointer;
+      transition:0.2s;
+    }
+
+    .payment-btn:hover{
+      border-color:#111;
+      transform:translateY(-2px);
+    }
+
+    .icon{
+      margin-right:8px;
+    }
+  </style>
+</head>
+
+<body>
+
+<div class="container">
+
+  <h2>Choose Payment Method</h2>
+
+  <div class="subtext">
+    Secure checkout • Fast payment • Trusted methods
+  </div>
+
+  <button class="payment-btn" onclick="selectMethod('UPI')">
+    📱 UPI / Google Pay / PhonePe
+  </button>
+
+  <button class="payment-btn" onclick="selectMethod('COD')">
+    💵 Cash on Delivery
+  </button>
+
+</div>
+
+<script>
+function selectMethod(method) {
+  localStorage.setItem("paymentMethod", method);
+  window.location.href = "/confirm-payment.html";
+}
+</script>
+
+</body>
+</html>
